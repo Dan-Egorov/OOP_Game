@@ -4,7 +4,7 @@
 Robot::Robot(int hp, int hpMax, int power, int energy, int maxEnergy, BotType type)
     : hp(hp), hpMax(hpMax), power(power),
       energy(energy), maxEnergy(maxEnergy),
-      type(type), exp(0), expNewRang(10), speed(3) {}
+      type(type), exp(0), expNewRang(10), speed(3), vision(1) {}
 
 // Getters realization
 int Robot::getEnergy() const {
@@ -51,6 +51,10 @@ int Robot::getSpeed() const {
     return speed;
 }
 
+int Robot::getVision() const {
+    return vision;
+}
+
 //Setters realization
 void Robot::setHp(int newHp) {
     hp = newHp;
@@ -91,6 +95,11 @@ void Robot::setPosition(std::pair<int, int> newPosition) {
 void Robot::setSpeed(int newSpeed) {
     if (newSpeed < 1) newSpeed = 1;
     speed = newSpeed;
+}
+
+void Robot::setVision(int newVision) {
+    if (newVision < 1) newVision = 1;
+    vision = newVision;
 }
 
 //Attak function realization

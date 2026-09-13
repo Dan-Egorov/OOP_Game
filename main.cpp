@@ -5,11 +5,13 @@
 #include "Map/All_map.hpp"
 #include "MovSystem/moving.hpp"
 #include "Game/game.hpp"
+#include "Factory/factory.hpp"
 
 int main() {
     Robot robot(10, 20, 10, 10, 1, PLAYER);
-    Robot enemy(10, 20, 10, 10, 1, ENEMY);
+    Robot enemy(5, 10, 2, 5, 10, ENEMY);
     robot.setPosition(std::pair<int, int>(0, 1));
+    robot.setVision(6);
     enemy.setPosition(std::pair<int, int>(1, 1));
     GamePlace game(10, 20);
 
@@ -32,21 +34,7 @@ int main() {
     }
 
     Map map(game, robots);
-
-    /*
-    Vriter vriter(map);
-    vriter.printMap();
-
-    while (true) {
-        int nx, ny;
-        std::cout << "New h,w: ";
-        std::cin >> nx >> ny;
-        std::cout << nx << " " << ny << std::endl;
-
-        std::cout << Mov::makeMove(map, nx, ny, robots[0]) << std::endl;
-        vriter.printMap();
-    }
-    */
+    map.addFactory(Factory({8, 17}, 8));
 
     Game play(map);
     play.run();

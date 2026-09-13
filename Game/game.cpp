@@ -58,6 +58,11 @@ bool Game::playerDead() const {
     return p && p->getHp() <= 0;
 }
 
+void Game::factoryStep() {
+    for (auto& f : map.getFactories())
+        f.tick(map);
+}
+
 void Game::run() {
     Vriter vriter(map);
 
@@ -77,6 +82,7 @@ void Game::run() {
             return;
         }
 
+        factoryStep();
         endSteps();
     }
 }

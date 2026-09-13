@@ -19,6 +19,7 @@ private:
     int speed;
     std::pair<int, int> position;
     BotType type;
+    int vision;
 public:
     Robot(int hp, int hpMax, int power, int energy, int maxEnergy, BotType type);
 
@@ -32,6 +33,7 @@ public:
     int getRank() const;
     int getType() const;
     int  getSpeed() const;
+    int getVision() const;
     std::pair<int, int> getPosition() const;
 
     void setHp(int newHp);
@@ -44,6 +46,7 @@ public:
     void setType(BotType newType);
     void setPosition(std::pair<int, int> newPosition);
     void setSpeed(int newSpeed);
+    void setVision(int newVision);
 
     void botAttack(Robot &other);
     void botHeal(Robot &other);

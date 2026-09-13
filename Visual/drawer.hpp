@@ -3,9 +3,9 @@
 
 class Vriter {
 private:
-    Map gameMap;
+    Map& gameMap;
 public:
-    Vriter(Map map);
+    Vriter(Map& map);
 
     void printMap();
 };

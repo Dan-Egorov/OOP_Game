@@ -15,5 +15,6 @@ public:
 
     bool allEnemiesDead() const;
     bool playerDead() const;
+    void factoryStep();
     void run();
 };
