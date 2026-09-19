@@ -2,12 +2,11 @@
 #include <iostream>
 #include <vector>
 
-typedef struct Pixel {
-    int x, y;
+struct Pixel {
     bool pass;
     int difficulty;
-    Pixel(int x, int y, bool val = true, int diff = 1) : x(x), y(y), pass(val), difficulty(diff) {}
-}Pixel;
+    Pixel(bool val = true, int diff = 1) : pass(val), difficulty(diff) {}
+};
 
 class GamePlace {
 private:

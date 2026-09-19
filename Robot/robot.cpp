@@ -7,15 +7,15 @@ Robot::Robot(int hp, int hpMax, int power, int energy, int maxEnergy, BotType ty
       type(type), exp(0), expNewRang(10), speed(3), vision(1) {}
 
 // Getters realization
-int Robot::getEnergy() const {
+int Robot::getEnergy() {
     return energy;
 }
 
-int Robot::getPower() const {
+int Robot::getPower() {
     return power;
 }
 
-int Robot::getMaxEnergy() const {
+int Robot::getMaxEnergy() {
     return maxEnergy;
 }
 
@@ -23,35 +23,35 @@ int Robot::getHp() const {
     return hp;
 }
 
-int Robot::getHpMax() const {
+int Robot::getHpMax() {
     return hpMax;
 }
 
-int Robot::getExp() const {
+int Robot::getExp() {
     return exp;
 }
 
-int Robot::getExpNewRang() const {
+int Robot::getExpNewRang() {
     return expNewRang;
 }
 
-int Robot::getRank() const {
+int Robot::getRank() {
     return rank;
 }
 
-int Robot::getType() const {
+int Robot::getType() {
     return type;
 }
 
-std::pair<int, int> Robot::getPosition() const {
+std::pair<int, int> Robot::getPosition() {
     return position;
 }
 
-int Robot::getSpeed() const {
+int Robot::getSpeed() {
     return speed;
 }
 
-int Robot::getVision() const {
+int Robot::getVision() {
     return vision;
 }
 

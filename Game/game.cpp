@@ -2,23 +2,31 @@
 #include <iostream>
 #include "../MovSystem/moving.hpp"
 
+enum EndState {
+    Win,
+    Lose
+};
+
 Game::Game(Map& m): map(m) {}
 
 void Game::PlayerStep() {
     std::string stp;
     std::cout << "Player: ";
-    std::cin >> stp;
+    std::getline(std::cin, stp);
     Robot* player = map.findPlayer();
 
-    int new_x = 0;
-    int new_y = 0;
+    int steps = player->getSpeed();
+    for (auto step: stp) {
+        int new_x = 0;
+        int new_y = 0;
+        if (steps <= 0) break;
 
-    if (stp == "w") new_x = -1;
-    if (stp == "s") new_x = 1;
-    if (stp == "a") new_y = -1;
-    if (stp == "d") new_y = 1;
-
-    Mov::makeMove(map, new_x, new_y, *(player));
+        if (step == 'w') new_x = -1;
+        else if (step == 's') new_x = 1;
+        else if (step == 'a') new_y = -1;
+        else if (step == 'd') new_y = 1;
+        Mov::makeMove(map, new_x, new_y, *(player), steps);
+    }
 }
 
 void Game::enemyStep() {
@@ -34,8 +42,9 @@ void Game::enemyStep() {
         int dy = (player->getPosition().second > robot.getPosition().second)
                - (player->getPosition().second < robot.getPosition().second);
 
-        if (dx != 0 && Mov::makeMove(map, dx, 0, robot)) continue;
-        if (dy != 0 && Mov::makeMove(map, 0, dy, robot)) continue;
+        int steps = robot.getSpeed();
+        if (dx != 0 && Mov::makeMove(map, dx, 0, robot, steps)) continue;
+        if (dy != 0 && Mov::makeMove(map, 0, dy, robot, steps)) continue;
     }
 }
 
@@ -48,7 +57,7 @@ void Game::endSteps() {
 }
 
 bool Game::allEnemiesDead() const {
-    for (const auto& r : map.getRobots())
+    for (auto& r : map.getRobots())
         if (r.getType() == ENEMY && r.getHp() > 0) return false;
     return true;
 }
@@ -65,24 +74,36 @@ void Game::factoryStep() {
 
 void Game::run() {
     Vriter vriter(map);
+    bool running = true;
+    EndState state = Win;
 
-    while (true) {
+    while (running) {
         vriter.printMap();
 
         PlayerStep();
         if (playerDead()) {
-            std::cout << "You are dead!!!!" << std::endl;
-            return;
+            state = Lose;
+            running = false;
         }
 
-        enemyStep();
-        if (allEnemiesDead()) {
-            std::cout << "All enemies dead!!!" << std::endl;
-            std::cout << "You are won!!!!" << std::endl;
-            return;
+        if (running) {
+            enemyStep();
+            if (allEnemiesDead()) {
+                state = Win;
+                running = false;
+            }
         }
 
-        factoryStep();
-        endSteps();
+        if (running) {
+            factoryStep();
+            endSteps();
+        }
+    }
+
+    if (state == Win) {
+        std::cout << "All enemies dead!!!" << std::endl;
+        std::cout << "You are won!!!!" << std::endl;
+    } else {
+        std::cout << "You are dead!!!!" << std::endl;
     }
 }

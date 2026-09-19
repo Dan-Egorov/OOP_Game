@@ -15,7 +15,7 @@ GamePlace::GamePlace(int h, int w): size(h, w) {
     for (int i = 0; i < h; i++) {
         place.push_back(std::vector<Pixel>());
         for (int j = 0; j < w; j++) {
-            place[i].push_back(Pixel(0, 0));
+            place[i].push_back(Pixel());
         }
     }
 };

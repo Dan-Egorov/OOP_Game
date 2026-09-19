@@ -23,18 +23,18 @@ private:
 public:
     Robot(int hp, int hpMax, int power, int energy, int maxEnergy, BotType type);
 
-    int getHp() const;
-    int getHpMax() const;
-    int getPower() const;
-    int getEnergy() const;
-    int getMaxEnergy() const;
-    int getExp() const;
-    int getExpNewRang() const;
-    int getRank() const;
-    int getType() const;
-    int  getSpeed() const;
-    int getVision() const;
-    std::pair<int, int> getPosition() const;
+    int getHp() const ;
+    int getHpMax();
+    int getPower();
+    int getEnergy();
+    int getMaxEnergy();
+    int getExp();
+    int getExpNewRang();
+    int getRank();
+    int getType();
+    int  getSpeed();
+    int getVision();
+    std::pair<int, int> getPosition();
 
     void setHp(int newHp);
     void setPower(int newPower);

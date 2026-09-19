@@ -27,7 +27,7 @@ void Vriter::printMap() {
                 int hard = gameMap.getPlace().getDifficulty(i, j);
 
                 if (hard == 1) {
-                    std::cout << " " << " ";
+                    std::cout << "." << " ";
                 } else if (hard == 2) {
                     std::cout << "'" << " ";
                 } else std::cout << ":" << " ";
