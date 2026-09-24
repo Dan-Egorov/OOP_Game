@@ -14,6 +14,8 @@ bool Mov::makeMove(Map& map, int dx, int dy, Robot& robot, int& budget) {
     if (map.walHere(newRow, newCol)) return false;
 
     int cost = map.getPlace().getDifficulty(newRow-dx, newCol-dy);
+    if (map.deadEnemyAt(newRow-dx, newCol-dy) && (cost + 1 <= budget))
+        cost++;
 
     Robot* other = map.robotAt(newRow, newCol);
     if (other != nullptr && other != &robot) {

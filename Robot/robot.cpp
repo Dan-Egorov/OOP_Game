@@ -1,127 +1,78 @@
 #include "robot.hpp"
 
-//Constructure
-Robot::Robot(int hp, int hpMax, int power, int energy, int maxEnergy, BotType type)
-    : hp(hp), hpMax(hpMax), power(power),
-      energy(energy), maxEnergy(maxEnergy),
-      type(type), exp(0), expNewRang(10), speed(3), vision(1) {}
-
-// Getters realization
-int Robot::getEnergy() {
-    return energy;
-}
-
-int Robot::getPower() {
-    return power;
-}
-
-int Robot::getMaxEnergy() {
-    return maxEnergy;
-}
+Robot::Robot(int hp, int hpMax, int power, int energy, int maxEnergy,
+             int speed, int vision, BotType type) : hp(hp), hpMax(hpMax),
+    power(power),energy(energy), maxEnergy(maxEnergy), speed(speed), vision(vision), type(type) {}
 
 int Robot::getHp() const {
     return hp;
 }
-
-int Robot::getHpMax() {
+int Robot::getHpMax() const {
     return hpMax;
 }
-
-int Robot::getExp() {
-    return exp;
+int Robot::getPower() const {
+    return power;
 }
-
-int Robot::getExpNewRang() {
-    return expNewRang;
+int Robot::getEnergy() const {
+    return energy;
 }
-
-int Robot::getRank() {
-    return rank;
+int Robot::getMaxEnergy() const {
+    return maxEnergy;
 }
-
-int Robot::getType() {
+int Robot::getSpeed() const {
+    return speed;
+}
+int Robot::getVision() const {
+    return vision;
+}
+BotType Robot::getType() const {
     return type;
 }
-
-std::pair<int, int> Robot::getPosition() {
+std::pair<int, int> Robot::getPosition() const {
     return position;
 }
 
-int Robot::getSpeed() {
-    return speed;
-}
-
-int Robot::getVision() {
-    return vision;
-}
-
-//Setters realization
 void Robot::setHp(int newHp) {
     hp = newHp;
 }
-
 void Robot::setPower(int newPower) {
     power = newPower;
 }
-
 void Robot::setEnergy(int newEnergy) {
     energy = newEnergy;
 }
-
 void Robot::setMaxEnergy(int newMaxEnergy) {
     maxEnergy = newMaxEnergy;
 }
-
-void Robot::setExp(int newExp) {
-    exp = newExp;
-}
-
-void Robot::setExpNewRang(int newExpNewRang) {
-    expNewRang = newExpNewRang;
-}
-
-void Robot::setRank(int newRank) {
-    rank = newRank;
-}
-
-void Robot::setType(BotType newType) {
-    type = newType;
-}
-
-void Robot::setPosition(std::pair<int, int> newPosition) {
-    position = newPosition;
-}
-
 void Robot::setSpeed(int newSpeed) {
     if (newSpeed < 1) newSpeed = 1;
     speed = newSpeed;
 }
-
 void Robot::setVision(int newVision) {
     if (newVision < 1) newVision = 1;
     vision = newVision;
 }
+void Robot::setPosition(std::pair<int, int> newPosition) {
+    position = newPosition;
+}
 
-//Attak function realization
-void Robot::botAttack(Robot &other) {
-    int new_hp = other.getHp() - this->getPower();
-    int new_exp = this->getExp() + 1;
-
+void Robot::botAttack(Robot& other) {
+    int new_hp = other.getHp() - power;
     if (new_hp < 0) new_hp = 0;
+    other.setHp(new_hp);
+    if (other.getHp() <= 0) {
+        other.onDeath();
+        onKill();
+    }
+}
 
-    this->setExp(new_exp);
+void Robot::botHeal(Robot& other) {
+    int new_hp = other.getHp() + power;
+    if (new_hp > other.getHpMax()) new_hp = other.getHpMax();
     other.setHp(new_hp);
 }
 
-//Heal realization
-void Robot::botHeal(Robot &other) {
-    int new_hp = other.getHp() + this->getPower();
-    if (new_hp > hpMax) new_hp = other.getHpMax();
-    other.setHp(new_hp);
-}
-
-//Choosing actions for bot
-void Robot::botAction(Robot &other) {
-    if (other.getType() != this->type) this->botAttack(other);
-    else this->botHeal(other);
+void Robot::botAction(Robot& other) {
+    if (other.getType() != type) botAttack(other);
+    else botHeal(other);
 }
