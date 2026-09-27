@@ -33,6 +33,7 @@ std::pair<int, int> Robot::getPosition() const {
 }
 
 void Robot::setHp(int newHp) {
+    if (newHp >= hpMax) newHp = hpMax;
     hp = newHp;
 }
 void Robot::setPower(int newPower) {

@@ -9,7 +9,7 @@ private:
 public:
     Game(Map& m);
 
-    void PlayerStep();
+    void PlayerStep(Vriter& vriter);
     void enemyStep();
     void endSteps();
 

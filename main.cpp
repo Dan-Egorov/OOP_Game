@@ -23,9 +23,13 @@ int main() {
 
     Player player(10, 20, 10, 10, 1, 3, 6);
     player.setPosition({0, 1});
+    player.addNewAbility(Around_ab);
+    player.addNewAbility(Heal_ab);
+    player.addNewAbility(Far_ab);
+    player.addNewAbility(Teleport_ab);
 
     std::vector<Enemy> enemies;
-    Enemy e1(5, 10, 2, 5, 10, 3, 3);
+    Enemy e1(5, 8, 2, 5, 10, 3, 3);
     e1.setPosition({1, 1});
     enemies.push_back(e1);
 

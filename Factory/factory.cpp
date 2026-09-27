@@ -36,7 +36,7 @@ bool Factory::tick(Map& map) {
             if (map.botHere(r, c)) continue;
             if (map.deadEnemyAt(r, c)) continue;
 
-            Enemy enemy(5, 10, 2, 2, 5, 3, 3);
+            Enemy enemy(5, 8, 2, 2, 5, 3, 3);
             enemy.setPosition(std::make_pair(r, c));
             map.addEnemy(enemy);
             return true;

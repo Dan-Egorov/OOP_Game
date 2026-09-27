@@ -14,6 +14,14 @@ int Player::getRank() const {
     return rank;
 }
 
+std::vector<AbilityType> Player::getAbilities() const {
+    return abilityTypes;
+}
+
+void Player::addNewAbility(AbilityType abilityType) {
+    abilityTypes.push_back(abilityType);
+}
+
 void Player::addExp(int new_exp) {
     exp += new_exp;
     while (exp >= expNewRang) {
