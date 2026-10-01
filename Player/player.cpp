@@ -2,7 +2,7 @@
 
 Player::Player(int hp, int hpMax, int power, int energy, int maxEnergy,
                int speed, int vision): Robot(hp, hpMax, power, energy, maxEnergy, speed, vision, PLAYER),
-      exp(0), expNewRang(10), rank(1) {}
+      exp(4), expNewRang(5), rank(1) {}
 
 int Player::getExp() const {
     return exp;
@@ -14,20 +14,33 @@ int Player::getRank() const {
     return rank;
 }
 
-std::vector<AbilityType> Player::getAbilities() const {
-    return abilityTypes;
+int Player::getAbilityCount() const {
+    return abilities.size();
 }
 
-void Player::addNewAbility(AbilityType abilityType) {
-    abilityTypes.push_back(abilityType);
+bool Player::needsUpgradeChoice() const {
+    return needsUpgrade;
 }
 
-void Player::addExp(int new_exp) {
-    exp += new_exp;
-    while (exp >= expNewRang) {
-        exp -= expNewRang;
-        rankUp();
-    }
+void Player::clearUpgradeFlag() {
+    needsUpgrade = false;
+}
+
+void Player::addAbility(std::unique_ptr<Ability> a) {
+    abilities.push_back(std::move(a));
+}
+
+bool Player::hasAbility(AbilityType type) const {
+    for (const auto& a : abilities)
+        if (a->getType() == type) return true;
+    return false;
+}
+
+const std::vector<std::unique_ptr<Ability>>& Player::getAbilities() const {
+    return abilities;
+}
+std::vector<std::unique_ptr<Ability>>& Player::getAbilities() {
+    return abilities;
 }
 
 void Player::rankUp() {
@@ -36,7 +49,16 @@ void Player::rankUp() {
     hp = hpMax;
     power += 2;
     maxEnergy += 5;
-    expNewRang = expNewRang * 2;
+    expNewRang *= 2;
+    needsUpgrade = true;
+}
+
+void Player::addExp(int amount) {
+    exp += amount;
+    while (exp >= expNewRang) {
+        exp -= expNewRang;
+        rankUp();
+    }
 }
 
 void Player::onKill() {

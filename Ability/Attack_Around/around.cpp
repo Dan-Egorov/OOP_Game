@@ -2,7 +2,7 @@
 #include "../Map/All_map.hpp"
 #include <iostream>
 
-Around::Around(int damage, int e) : damage(damage), usedEnergy(e) {}
+Around::Around(int damage, int radius, int e) : damage(damage), radius(radius), usedEnergy(e) {}
 
 std::string Around::getName() {
     return "around";
@@ -10,6 +10,14 @@ std::string Around::getName() {
 
 int Around::getUsedEnergy() {
     return usedEnergy;
+}
+
+AbilityType Around::getType() const {
+    return Around_ab;
+}
+
+void Around::upgrade() {
+    radius += 1;
 }
 
 void Around::use(Player &robot, Map &map, Enemy*) {

@@ -13,6 +13,14 @@ std::string Heal::getName() {
     return "Heal";
 }
 
+AbilityType Heal::getType() const {
+    return Heal_ab;
+}
+
+void Heal::upgrade() {
+    newHp += 5;
+}
+
 void Heal::use(Player &robot, Map &map, Enemy*) {
     if (robot.getEnergy() < usedEnergy) {
         std::cout << "Не хватает энергии" << std::endl;

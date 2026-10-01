@@ -1,11 +1,11 @@
 #include "game.hpp"
 #include <iostream>
 #include "../MovSystem/moving.hpp"
-#include "../FarAttack/far.hpp"
-#include "../Attack_Around/around.hpp"
-#include "../Heal/heal.hpp"
+#include "../Ability/Attack_Around/around.hpp"
+#include "../Ability/FarAttack/far.hpp"
+#include "../Ability/Heal/heal.hpp"
+#include "../Ability/Teleportation/teleportation.hpp"
 #include "../Selector/selector.hpp"
-#include "../Interface/Teleportation/teleportation.hpp"
 
 enum EndState {
     Win,
@@ -15,7 +15,7 @@ enum EndState {
 Game::Game(Map& m): map(m) {}
 
 void Game::PlayerStep(Vriter& vriter) {
-    std::cout << "Player (w/a/s/d, e = способность): ";
+    std::cout << "Player (w/a/s/d, e = ability): ";
     std::string stp;
     std::getline(std::cin, stp);
 
@@ -24,7 +24,7 @@ void Game::PlayerStep(Vriter& vriter) {
 
     int steps = player->getSpeed();
 
-    for (char step : stp) {
+    for (char step: stp) {
         if (step == 'w' || step == 's' || step == 'a' || step == 'd') {
             if (steps <= 0) break;
             int dx = 0, dy = 0;
@@ -35,61 +35,66 @@ void Game::PlayerStep(Vriter& vriter) {
             Mov::makeMove(map, dx, dy, *player, steps);
         }
         else if (step == 'e') {
-            std::vector<AbilityType> abilityTypes = player->getAbilities();
-            for (int i = 0; i < abilityTypes.size(); i++) {
-                if (abilityTypes[i] == Around_ab)
-                    std::cout << i << ") " << "Attak Around" << std::endl;
-                else if (abilityTypes[i] == Heal_ab)
-                    std::cout << i << ") " << "Heal" << std::endl;
-                else if (abilityTypes[i] == Far_ab)
-                    std::cout << i << ") " << "Far" << std::endl;
-                else if (abilityTypes[i] == Teleport_ab)
-                    std::cout << i << ") Teleport\n";
+            std::vector<std::unique_ptr<Ability>>& abs = player->getAbilities();
+
+            if (abs.empty()) {
+                std::cout << "No ability\n";
+                continue;
             }
-            std::string choose;
 
+            for (size_t i = 0; i < abs.size(); i++)
+                std::cout << i << ") " << abs[i]->getName() << "\n";
 
-            std::cout << "Choose your ability: ";
-            std::getline(std::cin, choose);
+            std::cout << "Choose ability: ";
+            std::string line;
+            std::getline(std::cin, line);
 
-            int index = -1;
+            int index;
             try {
-                index = std::stoi(choose);
-            } catch (...) {
-                return;
+                index = std::stoi(line);
+            }
+            catch (...) {
+                continue;
             }
 
-            if (index < 0 || index >= abilityTypes.size()) {
-                std::cout << "Choose error!" << std::endl;
-            } else if (!abilityTypes.empty()) {
-                if (abilityTypes[index] == Around_ab) {
-                    Around around(10, 1);
-                    around.use(*player, map);
-                } else if (abilityTypes[index] == Heal_ab) {
-                    Heal heal(10, 1);
-                    heal.use(*player, map);
-                } else if (abilityTypes[index] == Far_ab) {
-                    Far far(10, 3, 1);
+            if (index < 0 || index >= abs.size()) {
+                std::cout << "Choose error!\n";
+                continue;
+            }
+
+            Ability* ability = abs[index].get();
+
+            switch (ability->getType()) {
+                case Around_ab: {
+                    ability->use(*player, map, nullptr);
+                    break;
+                }
+                case Heal_ab: {
+                    ability->use(*player, map, nullptr);
+                    break;
+                }
+                case Far_ab: {
                     int x_p = player->getPosition().first;
                     int y_p = player->getPosition().second;
+                    std::vector<Enemy*> targets = Selector::EnemySelectorInRadius(map, x_p, y_p, 3);
+                    if (targets.empty()) break;
 
-                    std::vector<Enemy*> enemies = Selector::EnemySelectorInRadius(map, x_p, y_p, 3);
-
-                    vriter.setHighlight(enemies);
+                    vriter.setHighlight(targets);
                     vriter.printMap();
-
-                    Enemy* enemy = Selector::selectEnemyInRange(enemies);
-
-                    far.use(*player, map, enemy);
+                    Enemy* target = Selector::selectEnemyInRange(targets);
                     vriter.clearHighlight();
-                } else if (abilityTypes[index] == Teleport_ab) {
-                    Teleportation tp(5, 1);
 
-                    std::vector<std::pair<int, int>> cells = tp.collectValidCells(*player, map);
-                    if (cells.empty()) {
-                        std::cout << "Нет доступных клеток\n";
+                    ability->use(*player, map, target);
+                    break;
+                }
+                case Teleport_ab: {
+                    auto* tp = static_cast<Teleportation*>(ability);
+                    if (player->getEnergy() < tp->getUsedEnergy()) {
+                        std::cout << "Lacking energy\n";
                         break;
                     }
+                    std::vector<std::pair<int, int>> cells = tp->collectValidCells(*player, map);
+                    if (cells.empty()) break;
 
                     vriter.setGreenCells(cells);
                     vriter.printMap();
@@ -98,7 +103,7 @@ void Game::PlayerStep(Vriter& vriter) {
                     int px = user_pos.first;
                     int py = user_pos.second;
 
-                    std::cout << "Смещение (drow dcol), например '0 -3': ";
+                    std::cout << "Bias (col row), exp: '0 -3': ";
                     std::vector<int> nums;
                     std::string stroke;
                     std::getline(std::cin, stroke);
@@ -140,15 +145,134 @@ void Game::PlayerStep(Vriter& vriter) {
                     vriter.clearGreenCells();
 
                     if (!valid) {
-                        std::cout << "Нельзя туда телепортироваться\n";
+                        std::cout << "Can't teleport there\n";
                         break;
                     }
-
-                    tp.applyTeleport(*player, {targetRow, targetCol});
+                    tp->applyTeleport(*player, {targetRow, targetCol});
+                    break;
                 }
             }
         }
     }
+
+    if (player->needsUpgradeChoice()) {
+        handleRankUpChoice(*player);
+        player->clearUpgradeFlag();
+    }
+}
+
+void Game::handleRankUpChoice(Player& player) {
+    std::cout << "\nRank upping! Rank " << player.getRank() << std::endl;
+
+    const int MAX_ABILITIES = 4;
+    bool hasAllAbilities = player.getAbilityCount() >= MAX_ABILITIES;
+
+    if (!hasAllAbilities) {
+        std::cout << "1) Gate new ability\n";
+        std::cout << "2) Upgrade your\n";
+        std::cout << "Choose: ";
+        std::string line;
+        std::getline(std::cin, line);
+
+        if (line == "1") {
+            chooseNewAbility(player);
+            return;
+        }
+    }
+
+    chooseUpgradeAbility(player);
+}
+
+void Game::chooseNewAbility(Player& player) {
+    std::vector<AbilityType> available;
+    if (!player.hasAbility(Around_ab))
+        available.push_back(Around_ab);
+    if (!player.hasAbility(Far_ab))
+        available.push_back(Far_ab);
+    if (!player.hasAbility(Heal_ab))
+        available.push_back(Heal_ab);
+    if (!player.hasAbility(Teleport_ab))
+        available.push_back(Teleport_ab);
+
+    std::cout << "Available abilities:\n";
+    for (size_t i = 0; i < available.size(); ++i) {
+        switch (available[i]) {
+            case Around_ab: {
+                std::cout << i << ") Around\n";
+                break;
+            }
+            case Far_ab: {
+                std::cout << i << ") Far\n";
+                break;
+            }
+            case Heal_ab: {
+                std::cout << i << ") Heal\n";
+                break;
+            }
+            case Teleport_ab: {
+                std::cout << i << ") Teleport\n";
+                break;
+            }
+        }
+    }
+    std::cout << "Choose: ";
+    std::string line;
+    std::getline(std::cin, line);
+
+    int idx;
+    try {
+        idx = std::stoi(line);
+    }
+    catch (...) {
+        std::cout << "Not num\n"; return;
+    }
+
+    if (idx < 0 || idx >= available.size()) return;
+
+    switch (available[idx]) {
+        case Around_ab: {
+            player.addAbility(std::make_unique<Around>(10, 1, 1));
+            break;
+        }
+        case Far_ab: {
+            player.addAbility(std::make_unique<Far>(8, 3, 1));
+            break;
+        }
+        case Heal_ab: {
+            player.addAbility(std::make_unique<Heal>(15, 1));
+            break;
+        }
+        case Teleport_ab: {
+            player.addAbility(std::make_unique<Teleportation>(5, 10));
+            break;
+        }
+    }
+    std::cout << "Ability acquired!\n";
+}
+
+void Game::chooseUpgradeAbility(Player& player) {
+    auto& abs = player.getAbilities();
+    if (abs.empty()) return;
+
+    std::cout << "Choose ability for updating:\n";
+    for (size_t i = 0; i < abs.size(); ++i)
+        std::cout << i << ") " << abs[i]->getName() << "\n";
+
+    std::cout << "Choose: ";
+    std::string line;
+    std::getline(std::cin, line);
+
+    int idx;
+    try {
+        idx = std::stoi(line);
+    }
+    catch (...) {
+        return;
+    }
+
+    if (idx < 0 || idx >= abs.size()) return;
+
+    abs[idx]->upgrade();
 }
 
 void Game::enemyStep() {

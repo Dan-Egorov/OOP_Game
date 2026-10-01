@@ -23,4 +23,12 @@ add_executable(OOP_game
         src/Factory/factory.cpp
         src/Enemy/enemy.cpp
         src/Player/player.cpp
+
+        src/Selector/selector.cpp
+
+        src/Ability/interface.cpp
+        src/Ability/Teleportation/teleportation.cpp
+        src/Ability/Attack_Around/around.cpp
+        src/Ability/Heal/heal.cpp
+        src/Ability/FarAttack/far.cpp
 )

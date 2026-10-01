@@ -15,6 +15,14 @@ int Far::getUsedEnergy() {
     return usedEnergy;
 }
 
+AbilityType Far::getType() const {
+    return Far_ab;
+}
+
+void Far::upgrade() {
+    damage += 5;
+}
+
 void Far::use(Player& robot, Map& map, Enemy* target) {
     if (robot.getEnergy() < usedEnergy) {
         std::cout << "Не хватает энергии" << std::endl;

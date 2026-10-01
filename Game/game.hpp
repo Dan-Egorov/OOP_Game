@@ -9,6 +9,9 @@ private:
 public:
     Game(Map& m);
 
+    void handleRankUpChoice(Player& player);
+    void chooseNewAbility(Player& player);
+    void chooseUpgradeAbility(Player& player);
     void PlayerStep(Vriter& vriter);
     void enemyStep();
     void endSteps();

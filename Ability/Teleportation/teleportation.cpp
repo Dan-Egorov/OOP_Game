@@ -10,6 +10,15 @@ int Teleportation::getUsedEnergy() {
     return usedEnergy;
 }
 
+AbilityType Teleportation::getType() const {
+    return Teleport_ab;
+}
+
+void Teleportation::upgrade() {
+    if (usedEnergy > 3) usedEnergy -= 3;
+    else usedEnergy = 1;
+}
+
 std::vector<std::pair<int,int>> Teleportation::collectValidCells(Player& player, Map& map) {
     std::vector<std::pair<int,int>> cells;
     std::pair<int,int> user_pos = player.getPosition();

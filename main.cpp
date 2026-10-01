@@ -4,10 +4,10 @@
 #include "Player/player.hpp"
 #include "Enemy/enemy.hpp"
 #include "GamePlace/place.hpp"
-#include "Visual/drawer.hpp"
 #include "Map/All_map.hpp"
 #include "Game/game.hpp"
 #include "Factory/factory.hpp"
+#include "Ability/Attack_Around/around.hpp"
 
 int main() {
     GamePlace game(10, 20);
@@ -23,15 +23,17 @@ int main() {
 
     Player player(10, 20, 10, 10, 1, 3, 6);
     player.setPosition({0, 1});
-    player.addNewAbility(Around_ab);
-    player.addNewAbility(Heal_ab);
-    player.addNewAbility(Far_ab);
-    player.addNewAbility(Teleport_ab);
+
+    player.addAbility(std::make_unique<Around>(10, 1, 1));
 
     std::vector<Enemy> enemies;
     Enemy e1(5, 8, 2, 5, 10, 3, 3);
     e1.setPosition({1, 1});
     enemies.push_back(e1);
+
+    Enemy e2(5, 8, 2, 5, 10, 3, 3);
+    e2.setPosition({3, 1});
+    enemies.push_back(e2);
 
     Map map(game, &player, enemies);
     map.addFactory(Factory({8, 17}, 8));

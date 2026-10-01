@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <utility>
-#include "../Interface/interface.hpp"
+#include "../interface.hpp"
 
 class Teleportation : public Ability {
 private:
@@ -18,5 +18,8 @@ public:
 
     void applyTeleport(Player& user, std::pair<int,int> cell);
 
+    void upgrade() override;
+
     void use(Player&, Map&, Enemy*) override {}
+    AbilityType getType() const override;
 };
