@@ -1,5 +1,8 @@
 #pragma once
+#include <memory>
 #include <utility>
+#include <vector>
+#include "../Status/status.hpp"
 
 enum BotType {
     PLAYER,
@@ -17,6 +20,8 @@ protected:
     int vision;
     std::pair<int, int> position;
     BotType type;
+    std::vector<std::shared_ptr<Status>> statuses;
+    bool overloaded = false;
 public:
     Robot(int hp, int hpMax, int power, int energy,
         int maxEnergy, int speed, int vision, BotType type);
@@ -46,4 +51,15 @@ public:
 
     virtual void onKill() {}
     virtual void onDeath() {}
+
+    void setOverloaded(bool v) { overloaded = v; }
+    bool isOverloaded() const  { return overloaded; }
+
+    void addStatus(std::shared_ptr<Status> s);
+    void removeStatus(StatusType t);
+    bool hasStatus(StatusType t) const;
+    std::shared_ptr<Status> getStatus(StatusType t);
+    void tickStatuses();
+
+    //void takeDamage(int amount);
 };

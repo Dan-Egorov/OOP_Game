@@ -46,7 +46,7 @@ void Robot::setMaxEnergy(int newMaxEnergy) {
     maxEnergy = newMaxEnergy;
 }
 void Robot::setSpeed(int newSpeed) {
-    if (newSpeed < 1) newSpeed = 1;
+    if (newSpeed < 0) newSpeed = 0;
     speed = newSpeed;
 }
 void Robot::setVision(int newVision) {
@@ -76,4 +76,54 @@ void Robot::botHeal(Robot& other) {
 void Robot::botAction(Robot& other) {
     if (other.getType() != type) botAttack(other);
     else botHeal(other);
+}
+
+void Robot::addStatus(std::shared_ptr<Status> s) {
+    if (!s) return;
+
+    for (auto& existing : statuses) {
+        if (existing->getType() == s->getType()) {
+            existing->merge(*s);
+            return;
+        }
+    }
+
+    s->apply(*this);
+    statuses.push_back(s);
+}
+
+void Robot::removeStatus(StatusType t) {
+    for (auto it = statuses.begin(); it != statuses.end(); ++it) {
+        if ((*it)->getType() == t) {
+            (*it)->remove(*this);   // ← статус сам откатывает эффект
+            statuses.erase(it);
+            return;
+        }
+    }
+}
+
+bool Robot::hasStatus(StatusType t) const {
+    for (const auto& s : statuses)
+        if (s->getType() == t) return true;
+    return false;
+}
+
+std::shared_ptr<Status> Robot::getStatus(StatusType t) {
+    for (auto& s : statuses)
+        if (s->getType() == t) return s;
+    return nullptr;
+}
+
+void Robot::tickStatuses() {
+    for (auto& s : statuses)
+        s->tick(*this);
+
+    for (auto it = statuses.begin(); it != statuses.end(); ) {
+        if ((*it)->isExpired()) {
+            (*it)->remove(*this);
+            it = statuses.erase(it);
+        } else {
+            it++;
+        }
+    }
 }

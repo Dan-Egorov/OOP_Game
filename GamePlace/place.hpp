@@ -1,10 +1,12 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include "../Status/status.hpp"
 
 struct Pixel {
     bool pass;
     int difficulty;
+    std::vector<std::shared_ptr<Status>> pixelStates;
     Pixel(bool val = true, int diff = 1) : pass(val), difficulty(diff) {}
 };
 

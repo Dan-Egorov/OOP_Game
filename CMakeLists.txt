@@ -31,4 +31,7 @@ add_executable(OOP_game
         src/Ability/Attack_Around/around.cpp
         src/Ability/Heal/heal.cpp
         src/Ability/FarAttack/far.cpp
+
+        src/Status/status.cpp
+        src/Status/Slow/slow.cpp
 )

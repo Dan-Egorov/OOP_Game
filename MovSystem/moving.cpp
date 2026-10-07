@@ -1,4 +1,5 @@
 #include "moving.hpp"
+#include "../Status/status.hpp"
 
 bool Mov::makeMove(Map& map, int dx, int dy, Robot& robot, int& budget) {
     if (dx == 0 && dy == 0) return false;
@@ -18,6 +19,12 @@ bool Mov::makeMove(Map& map, int dx, int dy, Robot& robot, int& budget) {
         cost++;
 
     Robot* other = map.robotAt(newRow, newCol);
+    std::vector<std::shared_ptr<Status>>& sts =
+        map.getPlace().getPlace()[newRow][newCol].pixelStates;
+    if (!sts.empty()) {
+        robot.addStatus(sts[0]);
+        sts.erase(sts.begin());
+    }
     if (other != nullptr && other != &robot) {
         robot.botAction(*other);
         return true;

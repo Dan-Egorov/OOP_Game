@@ -8,6 +8,8 @@
 #include "Game/game.hpp"
 #include "Factory/factory.hpp"
 #include "Ability/Attack_Around/around.hpp"
+#include "Status/status.hpp"
+#include "Status/Slow/slow.hpp"
 
 int main() {
     GamePlace game(10, 20);
@@ -17,6 +19,8 @@ int main() {
     game.getPlace()[4][7].difficulty = 2;
     game.getPlace()[7][10].difficulty = 3;
     game.getPlace()[7][11].difficulty = 3;
+    Slow slw(1);
+    game.getPlace()[0][0].pixelStates.push_back(std::make_shared<Slow>(2));
 
     for (int i = 2; i < 18; i++) game.getPlace()[2][i].pass = false;
     for (int i = 3; i < 8;  i++) game.getPlace()[i][3].pass = false;

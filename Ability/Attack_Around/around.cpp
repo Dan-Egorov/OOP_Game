@@ -27,8 +27,8 @@ void Around::use(Player &robot, Map &map, Enemy*) {
     };
     std::pair<int, int> position = robot.getPosition();
     int x = position.first, y = position.second;
-    for (int i = x-1; i <= x+1; i++) {
-        for (int j = y-1; j <= y+1; j++) {
+    for (int i = x-radius; i <= x+radius; i++) {
+        for (int j = y-radius; j <= y+radius; j++) {
             if (i == x && j == y) continue;
             if (!map.aliveEnemyAt(i, j)) continue;
 

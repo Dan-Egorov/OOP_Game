@@ -26,6 +26,10 @@ void Game::PlayerStep(Vriter& vriter) {
 
     for (char step: stp) {
         if (step == 'w' || step == 's' || step == 'a' || step == 'd') {
+            if (player->hasStatus(Slow_st)) {
+                std::cout << "Slowing\n";
+                break;
+            }
             if (steps <= 0) break;
             int dx = 0, dy = 0;
             if (step == 'w') dx = -1;
@@ -35,6 +39,11 @@ void Game::PlayerStep(Vriter& vriter) {
             Mov::makeMove(map, dx, dy, *player, steps);
         }
         else if (step == 'e') {
+            if (player->isOverloaded()) {
+                player->removeStatus(Overload_st);
+                std::cout << "Перегрузка\n";
+                continue;
+            }
             std::vector<std::unique_ptr<Ability>>& abs = player->getAbilities();
 
             if (abs.empty()) {
@@ -281,6 +290,7 @@ void Game::enemyStep() {
 
     for (auto& enemy : map.getEnemies()) {
         if (!enemy.isAlive()) continue;
+        if (enemy.getSpeed() == 0) continue;
 
         int dx = (player->getPosition().first  > enemy.getPosition().first)
                - (player->getPosition().first  < enemy.getPosition().first);
@@ -304,6 +314,10 @@ void Game::endSteps() {
         enemy.setEnergy(enemy.getEnergy() + 5);
         enemy.setHp(enemy.getHp() + 1);
     }
+
+    if (p->getHp() > 0) p->tickStatuses();
+    for (auto& e : map.getEnemies())
+        if (e.isAlive()) e.tickStatuses();
 }
 
 bool Game::allEnemiesDead() const {
