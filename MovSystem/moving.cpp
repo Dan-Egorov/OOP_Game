@@ -23,6 +23,7 @@ bool Mov::makeMove(Map& map, int dx, int dy, Robot& robot, int& budget) {
         map.getPlace().getPlace()[newRow][newCol].pixelStates;
     if (!sts.empty()) {
         robot.addStatus(sts[0]);
+        std::cout << "Remove: " << sts[0]->getName() << std::endl;
         sts.erase(sts.begin());
     }
     if (other != nullptr && other != &robot) {

@@ -93,9 +93,9 @@ void Robot::addStatus(std::shared_ptr<Status> s) {
 }
 
 void Robot::removeStatus(StatusType t) {
-    for (auto it = statuses.begin(); it != statuses.end(); ++it) {
+    for (auto it = statuses.begin(); it != statuses.end(); it++) {
         if ((*it)->getType() == t) {
-            (*it)->remove(*this);   // ← статус сам откатывает эффект
+            (*it)->remove(*this);
             statuses.erase(it);
             return;
         }

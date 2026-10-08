@@ -1,12 +1,12 @@
 #pragma once
 #include "../status.hpp"
 
-class Slow : public Status {
+class Burning: public Status {
 private:
     int turnsLeft;
-    int savedSpeed = 0;
+    int damage;
 public:
-    Slow(int turns = 1) : turnsLeft(turns) {}
+    Burning(int turns = 1, int dam = 1);
 
     StatusType getType() const override;
 

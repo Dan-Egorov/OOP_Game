@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 class Robot;
 
@@ -15,9 +16,11 @@ public:
 
     virtual StatusType getType() const = 0;
 
-    virtual void apply(Robot& bot) = 0;             // наложили
-    virtual void remove(Robot& bot) = 0;            // снимаем
-    virtual void merge(const Status& other) = 0;    // слияние
-    virtual void tick(Robot& bot) = 0;              // каждый ход
-    virtual bool isExpired() const = 0;             // пора удалить?
+    virtual std::string getName() const = 0;
+
+    virtual void apply(Robot& bot) = 0;
+    virtual void remove(Robot& bot) = 0;
+    virtual void merge(const Status& other) = 0;
+    virtual void tick(Robot& bot) = 0;
+    virtual bool isExpired() const = 0;
 };

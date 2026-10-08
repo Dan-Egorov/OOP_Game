@@ -15,11 +15,17 @@ enum EndState {
 Game::Game(Map& m): map(m) {}
 
 void Game::PlayerStep(Vriter& vriter) {
+    Player* player = map.findPlayer();
+
+    std::cout << "hp: " << player->getHp()
+    << " exp: " << player->getExp()
+    << " rank: " << player->getRank()
+    << "\n";
+
     std::cout << "Player (w/a/s/d, e = ability): ";
     std::string stp;
     std::getline(std::cin, stp);
 
-    Player* player = map.findPlayer();
     if (!player) return;
 
     int steps = player->getSpeed();
@@ -28,7 +34,7 @@ void Game::PlayerStep(Vriter& vriter) {
         if (step == 'w' || step == 's' || step == 'a' || step == 'd') {
             if (player->hasStatus(Slow_st)) {
                 std::cout << "Slowing\n";
-                break;
+                continue;
             }
             if (steps <= 0) break;
             int dx = 0, dy = 0;
@@ -41,7 +47,7 @@ void Game::PlayerStep(Vriter& vriter) {
         else if (step == 'e') {
             if (player->isOverloaded()) {
                 player->removeStatus(Overload_st);
-                std::cout << "Перегрузка\n";
+                std::cout << "Overloading\n";
                 continue;
             }
             std::vector<std::unique_ptr<Ability>>& abs = player->getAbilities();

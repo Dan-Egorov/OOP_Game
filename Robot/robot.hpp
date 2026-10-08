@@ -22,6 +22,7 @@ protected:
     BotType type;
     std::vector<std::shared_ptr<Status>> statuses;
     bool overloaded = false;
+    bool isBurning = false;
 public:
     Robot(int hp, int hpMax, int power, int energy,
         int maxEnergy, int speed, int vision, BotType type);
@@ -36,6 +37,8 @@ public:
     int getVision() const;
     BotType getType() const;
     std::pair<int, int> getPosition() const;
+    bool getIsBurning() const {return isBurning;};
+
 
     void setHp(int newHp);
     void setPower(int newPower);
@@ -54,6 +57,8 @@ public:
 
     void setOverloaded(bool v) { overloaded = v; }
     bool isOverloaded() const  { return overloaded; }
+
+    void setIsBurning(bool v) { isBurning = v; }
 
     void addStatus(std::shared_ptr<Status> s);
     void removeStatus(StatusType t);

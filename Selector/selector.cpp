@@ -20,12 +20,12 @@ namespace Selector {
 
     Enemy* selectEnemyInRange(std::vector<Enemy*>& targets) {
         if (targets.empty()) {
-            std::cout << "Нет целей в радиусе.\n";
+            std::cout << "No target in ratio.\n";
             return nullptr;
         }
         if (targets.size() > 10) targets.resize(10);
 
-        std::cout << "Цель 0-" << targets.size() - 1 << " (q - отмена): ";
+        std::cout << "Target 0-" << targets.size() - 1 << " (q - exit): ";
         std::string line;
         std::getline(std::cin, line);
 
