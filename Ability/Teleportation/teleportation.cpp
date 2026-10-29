@@ -51,7 +51,7 @@ std::vector<std::pair<int,int>> Teleportation::collectValidCells(Robot& player, 
 
 void Teleportation::applyTeleport(Robot& player, std::pair<int,int> cell) {
     if (player.getEnergy() < usedEnergy) {
-        std::cout << "Не хватает энергии\n";
+        std::cout << "Not enough energy\n";
         return;
     }
     player.setEnergy(player.getEnergy() - usedEnergy);

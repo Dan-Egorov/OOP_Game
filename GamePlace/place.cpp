@@ -2,14 +2,13 @@
 #include <vector>
 #include <iostream>
 
-#define MAX_SIZE 20
-#define MIN_SIZE 5
+#include "../Config/GameConfig.hpp"
 
 GamePlace::GamePlace(int h, int w): size(h, w) {
-    if (h > MAX_SIZE || w > MAX_SIZE) {
+    if (h > Config::Map::MAX_SIZE || w > Config::Map::MAX_SIZE) {
         throw std::invalid_argument("width or height value is too big");
     }
-    if (h < MIN_SIZE || w < MIN_SIZE) {
+    if (h < Config::Map::MIN_SIZE || w < Config::Map::MIN_SIZE) {
         throw std::invalid_argument("width or height value is too small");
     }
     for (int i = 0; i < h; i++) {
@@ -18,7 +17,7 @@ GamePlace::GamePlace(int h, int w): size(h, w) {
             place[i].push_back(Pixel());
         }
     }
-};
+}
 
 void GamePlace::print_place() {
     for (int i = 0; i < size.first; i++) {

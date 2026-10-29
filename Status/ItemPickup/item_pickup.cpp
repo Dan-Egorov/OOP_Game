@@ -5,6 +5,14 @@
 #include "../../Item/AttackBoost/attack_boost.hpp"
 #include <iostream>
 
+StatusType ItemPickup::getType() const {
+    return ItemPickup_st;
+}
+
+std::string ItemPickup::getName() const {
+    return "Item Pickup";
+}
+
 void ItemPickup::apply(Robot& bot) {
     if (bot.getType() != PLAYER) return;
 

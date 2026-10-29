@@ -14,6 +14,14 @@ int Player::getRank() const {
     return rank;
 }
 
+void Player::receiveItem(std::shared_ptr<Item> item) {
+    inventory.addItem(item);
+}
+
+Inventory& Player::getInventory() {
+    return inventory;
+}
+
 bool Player::needsUpgradeChoice() const {
     return needsUpgrade;
 }

@@ -8,6 +8,7 @@
 #include "../Ability/Heal/heal.hpp"
 #include "../Ability/Teleportation/teleportation.hpp"
 #include "../Selector/selector.hpp"
+#include "../Config/GameConfig.hpp"
 
 enum EndState {
     Win,
@@ -49,7 +50,7 @@ void Game::PlayerStep(Vriter& vriter) {
             else if (step == 'd') dy = 1;
             Mov::makeMove(map, dx, dy, *player, steps);
         }
-        else if (step == 'i') { // <--- НОВАЯ КОМАНДА ДЛЯ ИНВЕНТАРЯ
+        else if (step == 'i') {
             auto& inv = player->getInventory().getItems();
             if (inv.empty()) {
                 std::cout << "Inventory is empty!\n";
@@ -76,8 +77,8 @@ void Game::PlayerStep(Vriter& vriter) {
             }
 
             if (idx >= 0 && idx < inv.size()) {
-                inv[idx]->use(*player); // Используем предмет
-                player->getInventory().removeItem(idx); // Удаляем из сумки
+                inv[idx]->use(*player);
+                player->getInventory().removeItem(idx);
             } else {
                 std::cout << "Invalid item number.\n";
             }
@@ -286,19 +287,25 @@ void Game::chooseNewAbility(Player& player) {
 
     switch (available[idx]) {
         case Around_ab: {
-            player.addAbility(std::make_unique<Around>(10, 1, 1));
+            player.addAbility(std::make_unique<Around>(Config::Abilities::AROUND_DAMAGE,
+                Config::Abilities::AROUND_RADIUS,
+                Config::Abilities::AROUND_ENERGY));
             break;
         }
         case Far_ab: {
-            player.addAbility(std::make_unique<Far>(8, 3, 1));
+            player.addAbility(std::make_unique<Far>(Config::Abilities::FAR_DAMAGE,
+                Config::Abilities::FAR_RADIUS,
+                Config::Abilities::FAR_ENERGY));
             break;
         }
         case Heal_ab: {
-            player.addAbility(std::make_unique<Heal>(15, 1));
+            player.addAbility(std::make_unique<Heal>(Config::Abilities::HEAL_AMOUNT,
+                Config::Abilities::HEAL_ENERGY));
             break;
         }
         case Teleport_ab: {
-            player.addAbility(std::make_unique<Teleportation>(5, 10));
+            player.addAbility(std::make_unique<Teleportation>(Config::Abilities::TELEPORT_RANGE,
+                Config::Abilities::TELEPORT_ENERGY));
             break;
         }
     }
@@ -388,13 +395,13 @@ void Game::enemyStep() {
 void Game::endSteps() {
     Player* p = map.findPlayer();
     if (p->getHp() > 0) {
-        p->setEnergy(p->getEnergy() + 5);
-        p->setHp(p->getHp() + 1);
+        p->setEnergy(p->getEnergy() + Config::Gameplay::TURN_ENERGY_REGEN);
+        p->setHp(p->getHp() + Config::Gameplay::TURN_HP_REGEN);
     }
     for (auto& enemy : map.getEnemies()) {
         if (!enemy.isAlive()) continue;
-        enemy.setEnergy(enemy.getEnergy() + 5);
-        enemy.setHp(enemy.getHp() + 1);
+        enemy.setEnergy(enemy.getEnergy() + Config::Gameplay::TURN_ENERGY_REGEN);
+        enemy.setHp(enemy.getHp() + Config::Gameplay::TURN_HP_REGEN);
     }
 
     if (p->getHp() > 0) p->tickStatuses();

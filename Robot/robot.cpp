@@ -34,6 +34,10 @@ std::pair<int, int> Robot::getPosition() const {
     return position;
 }
 
+bool Robot::getIsBurning() const {
+    return isBurning;
+}
+
 const std::vector<std::shared_ptr<Ability>>& Robot::getAbilities() const {
     return abilities;
 }
@@ -67,6 +71,20 @@ void Robot::setVision(int newVision) {
 void Robot::setPosition(std::pair<int, int> newPosition) {
     position = newPosition;
 }
+
+
+void Robot::setOverloaded(bool v) {
+    overloaded = v;
+}
+
+bool Robot::isOverloaded() const {
+    return overloaded;
+}
+
+void Robot::setIsBurning(bool v) {
+    isBurning = v;
+}
+
 
 int Robot::getAbilityCount() const {
     return abilities.size();

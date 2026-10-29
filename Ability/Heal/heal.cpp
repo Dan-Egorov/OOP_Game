@@ -23,7 +23,7 @@ void Heal::upgrade() {
 
 void Heal::use(Robot &robot, Map &map, Enemy*) {
     if (robot.getEnergy() < usedEnergy) {
-        std::cout << "Не хватает энергии" << std::endl;
+        std::cout << "Not enough energy" << std::endl;
         return;
     }
     int new_hp = robot.getHp() + newHp;

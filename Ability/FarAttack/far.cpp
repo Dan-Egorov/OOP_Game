@@ -26,7 +26,7 @@ void Far::upgrade() {
 
 void Far::use(Robot& robot, Map& map, Enemy* target) {
     if (robot.getEnergy() < usedEnergy) {
-        std::cout << "Не хватает энергии" << std::endl;
+        std::cout << "Not enough energy" << std::endl;
         return;
     }
 

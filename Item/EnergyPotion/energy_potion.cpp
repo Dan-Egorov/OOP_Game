@@ -1,5 +1,6 @@
 #include "energy_potion.hpp"
 #include "../../Robot/robot.hpp"
+#include "../Config/GameConfig.hpp"
 #include <iostream>
 
 std::string EnergyPotion::getName() const {
@@ -7,6 +8,6 @@ std::string EnergyPotion::getName() const {
 }
 
 void EnergyPotion::use(Robot& bot) {
-    bot.setEnergy(bot.getEnergy() + 15);
+    bot.setEnergy(bot.getEnergy() + Config::Items::ENERGY_POTION_RESTORE);
     std::cout << "Used Energy Potion: +15 Energy\n";
 }

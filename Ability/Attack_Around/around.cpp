@@ -23,7 +23,7 @@ void Around::upgrade() {
 
 void Around::use(Robot &robot, Map &map, Enemy*) {
     if (robot.getEnergy() < usedEnergy) {
-        std::cout << "Не хватает энергии" << std::endl;
+        std::cout << "Not enough energy" << std::endl;
         return;
     };
     std::pair<int, int> position = robot.getPosition();

@@ -20,6 +20,8 @@
 #include "Ability/FarAttack/far.hpp"
 #include "Ability/Attack_Around/around.hpp"
 
+#include "Config/GameConfig.hpp"
+
 #include <random>
 
 void generateMapStatuses(GamePlace& game) {
@@ -35,9 +37,10 @@ void generateMapStatuses(GamePlace& game) {
             if (roll <= 10) {
                 int type = chance(gen) % 4;
                 if (type == 0) game.getPlace()[i][j].pixelStates.push_back(std::make_shared<Slow>(1));
-                else if (type == 1) game.getPlace()[i][j].pixelStates.push_back(std::make_shared<Burning>(3, 2));
+                else if (type == 1) game.getPlace()[i][j].pixelStates.push_back(std::make_shared<Burning>(Config::Statuses::BURNING_TURNS,
+                    Config::Statuses::BURNING_DAMAGE));
                 else if (type == 2) game.getPlace()[i][j].pixelStates.push_back(std::make_shared<Overload>());
-                else game.getPlace()[i][j].pixelStates.push_back(std::make_shared<Shield>(10));
+                else game.getPlace()[i][j].pixelStates.push_back(std::make_shared<Shield>(Config::Statuses::SHIELD_DEFAULT_AMOUNT));
             }
 
             else if (roll <= 15) {
@@ -59,15 +62,33 @@ int main() {
     for (int i = 2; i < 18; i++) game.getPlace()[2][i].pass = false;
     for (int i = 3; i < 8;  i++) game.getPlace()[i][3].pass = false;
 
-    Player player(15, 20, 6, 10, 10, 3, 6);
+    Player player(Config::Player::START_HP,
+        Config::Player::START_HP_MAX,
+        Config::Player::START_POWER,
+        Config::Player::START_ENERGY,
+        Config::Player::START_MAX_ENERGY,
+        Config::Player::START_SPEED,
+        Config::Player::START_VISION);
     player.setPosition({0, 1});
 
     std::vector<Enemy> enemies;
-    Enemy e1(15, 15, 5, 5, 10, 3, 3);
+    Enemy e1(Config::Enemy::DEFAULT_HP,
+        Config::Enemy::DEFAULT_HP_MAX,
+        Config::Enemy::DEFAULT_POWER,
+        Config::Enemy::DEFAULT_ENERGY,
+        Config::Enemy::DEFAULT_MAX_ENERGY,
+        Config::Enemy::DEFAULT_SPEED,
+        Config::Enemy::DEFAULT_VISION);
     e1.setPosition({1, 1});
     enemies.push_back(e1);
 
-    Enemy e2(15, 15, 5, 5, 10, 3, 3);
+    Enemy e2(Config::Enemy::DEFAULT_HP,
+        Config::Enemy::DEFAULT_HP_MAX,
+        Config::Enemy::DEFAULT_POWER,
+        Config::Enemy::DEFAULT_ENERGY,
+        Config::Enemy::DEFAULT_MAX_ENERGY,
+        Config::Enemy::DEFAULT_SPEED,
+        Config::Enemy::DEFAULT_VISION);
     e2.setPosition({3, 1});
     enemies.push_back(e2);
 

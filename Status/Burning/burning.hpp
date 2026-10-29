@@ -6,7 +6,7 @@ private:
     int turnsLeft;
     int damage;
 public:
-    Burning(int turns = 1, int dam = 1);
+    Burning(int turns, int dam);
 
     StatusType getType() const override;
 

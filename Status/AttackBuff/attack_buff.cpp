@@ -1,5 +1,6 @@
 #include "attack_buff.hpp"
 #include "../../Robot/robot.hpp"
+#include "../../Config/GameConfig.hpp"
 
 AttackBuff::AttackBuff(int turns) : turnsLeft(turns), savedPower(0) {}
 
@@ -13,7 +14,7 @@ std::string AttackBuff::getName() const {
 
 void AttackBuff::apply(Robot& bot) {
     savedPower = bot.getPower();
-    bot.setPower(bot.getPower() + 5);
+    bot.setPower(bot.getPower() + Config::Items::ATTACK_BOOST_AMOUNT);
 }
 
 void AttackBuff::remove(Robot& bot) {

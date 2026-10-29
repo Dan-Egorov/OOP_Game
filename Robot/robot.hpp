@@ -42,7 +42,7 @@ public:
     int getVision() const;
     BotType getType() const;
     std::pair<int, int> getPosition() const;
-    bool getIsBurning() const {return isBurning;}
+    bool getIsBurning() const;
     const std::vector<std::shared_ptr<Ability>>& getAbilities() const;
     std::vector<std::shared_ptr<Ability>>& getAbilities();
 
@@ -62,10 +62,10 @@ public:
     virtual void onKill() {}
     virtual void onDeath() {}
 
-    void setOverloaded(bool v) { overloaded = v; }
-    bool isOverloaded() const  { return overloaded; }
+    void setOverloaded(bool v);
+    bool isOverloaded() const;
 
-    void setIsBurning(bool v) { isBurning = v; }
+    void setIsBurning(bool v);
 
     void addAbility(std::shared_ptr<Ability> a);
     bool hasAbility(AbilityType type) const;

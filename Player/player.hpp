@@ -19,8 +19,8 @@ public:
     int getExpNewRang() const;
     int getRank() const;
 
-    void receiveItem(std::shared_ptr<Item> item) override { inventory.addItem(item); }
-    Inventory& getInventory() { return inventory; }
+    void receiveItem(std::shared_ptr<Item> item) override;
+    Inventory& getInventory();
 
     bool needsUpgradeChoice() const;
     void clearUpgradeFlag();
