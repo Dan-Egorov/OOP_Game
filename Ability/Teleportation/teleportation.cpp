@@ -19,7 +19,7 @@ void Teleportation::upgrade() {
     else usedEnergy = 1;
 }
 
-std::vector<std::pair<int,int>> Teleportation::collectValidCells(Player& player, Map& map) {
+std::vector<std::pair<int,int>> Teleportation::collectValidCells(Robot& player, Map& map) {
     std::vector<std::pair<int,int>> cells;
     std::pair<int,int> user_pos = player.getPosition();
     int px = user_pos.first;
@@ -49,7 +49,7 @@ std::vector<std::pair<int,int>> Teleportation::collectValidCells(Player& player,
     return cells;
 }
 
-void Teleportation::applyTeleport(Player& player, std::pair<int,int> cell) {
+void Teleportation::applyTeleport(Robot& player, std::pair<int,int> cell) {
     if (player.getEnergy() < usedEnergy) {
         std::cout << "Не хватает энергии\n";
         return;

@@ -1,5 +1,7 @@
 #include "game.hpp"
 #include <iostream>
+#include <cmath>
+
 #include "../MovSystem/moving.hpp"
 #include "../Ability/Attack_Around/around.hpp"
 #include "../Ability/FarAttack/far.hpp"
@@ -20,9 +22,12 @@ void Game::PlayerStep(Vriter& vriter) {
     std::cout << "hp: " << player->getHp()
     << " exp: " << player->getExp()
     << " rank: " << player->getRank()
+    << " speed: " << player->getSpeed() << "\n"
+    << "energy: " << player->getEnergy()
+    << " power: " << player->getPower()
     << "\n";
 
-    std::cout << "Player (w/a/s/d, e = ability): ";
+    std::cout << "Player (e = ability, i = inventory, v = visual): ";
     std::string stp;
     std::getline(std::cin, stp);
 
@@ -44,13 +49,46 @@ void Game::PlayerStep(Vriter& vriter) {
             else if (step == 'd') dy = 1;
             Mov::makeMove(map, dx, dy, *player, steps);
         }
+        else if (step == 'i') { // <--- НОВАЯ КОМАНДА ДЛЯ ИНВЕНТАРЯ
+            auto& inv = player->getInventory().getItems();
+            if (inv.empty()) {
+                std::cout << "Inventory is empty!\n";
+                continue;
+            }
+
+            std::cout << "\n--- INVENTORY ---\n";
+            for (size_t i = 0; i < inv.size(); ++i) {
+                std::cout << i << ") " << inv[i]->getName() << "\n";
+            }
+            std::cout << "Enter item number to use (or 'q' to cancel): ";
+
+            std::string item_choice;
+            std::getline(std::cin, item_choice);
+
+            if (item_choice == "q" || item_choice.empty()) continue;
+
+            int idx;
+            try {
+                idx = std::stoi(item_choice);
+            } catch (...) {
+                std::cout << "Invalid input.\n";
+                continue;
+            }
+
+            if (idx >= 0 && idx < inv.size()) {
+                inv[idx]->use(*player); // Используем предмет
+                player->getInventory().removeItem(idx); // Удаляем из сумки
+            } else {
+                std::cout << "Invalid item number.\n";
+            }
+        }
         else if (step == 'e') {
             if (player->isOverloaded()) {
                 player->removeStatus(Overload_st);
                 std::cout << "Overloading\n";
                 continue;
             }
-            std::vector<std::unique_ptr<Ability>>& abs = player->getAbilities();
+            std::vector<std::shared_ptr<Ability>>& abs = player->getAbilities();
 
             if (abs.empty()) {
                 std::cout << "No ability\n";
@@ -167,6 +205,8 @@ void Game::PlayerStep(Vriter& vriter) {
                     break;
                 }
             }
+        } else if (step == 'v') {
+            vriter.nextMode();
         }
     }
 
@@ -290,6 +330,24 @@ void Game::chooseUpgradeAbility(Player& player) {
     abs[idx]->upgrade();
 }
 
+std::pair<int, int> Game::chooseNear(std::vector<std::pair<int,int>> cells,
+    std::pair<int,int> player_position) {
+    int min = std::max(map.getSize().first, map.getSize().second);
+    min *= min;
+    std::pair<int,int> result;
+
+    for (int i = 0; i < cells.size(); i++) {
+        int dx = player_position.first - cells[i].first;
+        int dy = player_position.second - cells[i].second;
+        int dist = dx * dx + dy * dy;
+        if (dist < min) {
+            min = dist;
+            result = cells[i];
+        }
+    }
+    return result;
+}
+
 void Game::enemyStep() {
     Player* player = map.findPlayer();
     if (!player) return;
@@ -297,6 +355,24 @@ void Game::enemyStep() {
     for (auto& enemy : map.getEnemies()) {
         if (!enemy.isAlive()) continue;
         if (enemy.getSpeed() == 0) continue;
+
+        auto& abs = enemy.getAbilities();
+        if (!abs.empty()) {
+            Robot* bot_enemy = map.robotAt(enemy.getPosition().first,
+                enemy.getPosition().second);
+            auto* ability = abs[0].get();
+            if (ability->getType() == Heal_ab && enemy.getHp() < enemy.getHpMax() / 2) {
+                ability->use(*bot_enemy, map, nullptr);
+            } else if (ability->getType() == Teleport_ab) {
+                Teleportation* tp = static_cast<Teleportation*>(ability);
+                auto cells = tp->collectValidCells(*bot_enemy, map);
+                if (!cells.empty()) {
+                    std::pair<int, int> pos = chooseNear(cells, player->getPosition());
+
+                    tp->applyTeleport(enemy, pos);
+                }
+            }
+        }
 
         int dx = (player->getPosition().first  > enemy.getPosition().first)
                - (player->getPosition().first  < enemy.getPosition().first);

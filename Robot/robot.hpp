@@ -3,6 +3,8 @@
 #include <utility>
 #include <vector>
 #include "../Status/status.hpp"
+#include "../Ability/interface.hpp"
+#include "../Item/item.hpp"
 
 enum BotType {
     PLAYER,
@@ -21,12 +23,15 @@ protected:
     std::pair<int, int> position;
     BotType type;
     std::vector<std::shared_ptr<Status>> statuses;
+    std::vector<std::shared_ptr<Ability>> abilities;
     bool overloaded = false;
     bool isBurning = false;
 public:
     Robot(int hp, int hpMax, int power, int energy,
         int maxEnergy, int speed, int vision, BotType type);
     virtual ~Robot() = default;
+
+    virtual void receiveItem(std::shared_ptr<Item> item) {}
 
     int getHp() const;
     int getHpMax() const;
@@ -37,7 +42,9 @@ public:
     int getVision() const;
     BotType getType() const;
     std::pair<int, int> getPosition() const;
-    bool getIsBurning() const {return isBurning;};
+    bool getIsBurning() const {return isBurning;}
+    const std::vector<std::shared_ptr<Ability>>& getAbilities() const;
+    std::vector<std::shared_ptr<Ability>>& getAbilities();
 
 
     void setHp(int newHp);
@@ -60,11 +67,15 @@ public:
 
     void setIsBurning(bool v) { isBurning = v; }
 
+    void addAbility(std::shared_ptr<Ability> a);
+    bool hasAbility(AbilityType type) const;
+    int  getAbilityCount() const;
+
     void addStatus(std::shared_ptr<Status> s);
     void removeStatus(StatusType t);
     bool hasStatus(StatusType t) const;
     std::shared_ptr<Status> getStatus(StatusType t);
     void tickStatuses();
 
-    //void takeDamage(int amount);
+    void takeDamage(int amount);
 };

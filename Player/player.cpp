@@ -14,33 +14,12 @@ int Player::getRank() const {
     return rank;
 }
 
-int Player::getAbilityCount() const {
-    return abilities.size();
-}
-
 bool Player::needsUpgradeChoice() const {
     return needsUpgrade;
 }
 
 void Player::clearUpgradeFlag() {
     needsUpgrade = false;
-}
-
-void Player::addAbility(std::unique_ptr<Ability> a) {
-    abilities.push_back(std::move(a));
-}
-
-bool Player::hasAbility(AbilityType type) const {
-    for (const auto& a : abilities)
-        if (a->getType() == type) return true;
-    return false;
-}
-
-const std::vector<std::unique_ptr<Ability>>& Player::getAbilities() const {
-    return abilities;
-}
-std::vector<std::unique_ptr<Ability>>& Player::getAbilities() {
-    return abilities;
 }
 
 void Player::rankUp() {

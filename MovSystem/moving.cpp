@@ -22,9 +22,15 @@ bool Mov::makeMove(Map& map, int dx, int dy, Robot& robot, int& budget) {
     std::vector<std::shared_ptr<Status>>& sts =
         map.getPlace().getPlace()[newRow][newCol].pixelStates;
     if (!sts.empty()) {
-        robot.addStatus(sts[0]);
-        std::cout << "Remove: " << sts[0]->getName() << std::endl;
-        sts.erase(sts.begin());
+        int idx = rand() % sts.size();
+        if (sts.size() > 1) {
+            srand(time(0));
+            int rnd = rand() % 101;
+            idx = rnd >= 50 ? 1 : 0;
+            std::cout << "rnd: " << rnd << " index: " << idx << std::endl;
+        }
+        robot.addStatus(sts[idx]);
+        sts.erase(sts.begin() + idx);
     }
     if (other != nullptr && other != &robot) {
         robot.botAction(*other);

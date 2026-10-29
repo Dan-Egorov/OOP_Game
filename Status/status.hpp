@@ -7,7 +7,8 @@ enum StatusType {
     Slow_st,
     Overload_st,
     Burning_st,
-    Shield_st
+    Shield_st,
+    ItemPickup_st
 };
 
 class Status {

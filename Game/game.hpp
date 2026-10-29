@@ -12,6 +12,8 @@ public:
     void handleRankUpChoice(Player& player);
     void chooseNewAbility(Player& player);
     void chooseUpgradeAbility(Player& player);
+    std::pair<int, int> chooseNear(std::vector<std::pair<int,int>> cells,
+        std::pair<int,int> player_position);
     void PlayerStep(Vriter& vriter);
     void enemyStep();
     void endSteps();

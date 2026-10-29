@@ -13,6 +13,6 @@ public:
     std::string getName() override;
     int getUsedEnergy() override;
     AbilityType getType() const override;
-    void use(Player& robot, Map& map, Enemy* target) override;
+    void use(Robot& robot, Map& map, Enemy* target) override;
     void upgrade() override;
 };

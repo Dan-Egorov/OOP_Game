@@ -1,5 +1,6 @@
 #include "around.hpp"
 #include "../Map/All_map.hpp"
+#include "../Status/Overload/overload.hpp"
 #include <iostream>
 
 Around::Around(int damage, int radius, int e) : damage(damage), radius(radius), usedEnergy(e) {}
@@ -20,7 +21,7 @@ void Around::upgrade() {
     radius += 1;
 }
 
-void Around::use(Player &robot, Map &map, Enemy*) {
+void Around::use(Robot &robot, Map &map, Enemy*) {
     if (robot.getEnergy() < usedEnergy) {
         std::cout << "Не хватает энергии" << std::endl;
         return;
@@ -33,16 +34,15 @@ void Around::use(Player &robot, Map &map, Enemy*) {
             if (!map.aliveEnemyAt(i, j)) continue;
 
             Robot* enemy = map.robotAt(i, j);
-            int new_hp = enemy->getHp() - damage;
-
-            if (new_hp < 0) new_hp = 0;
-            enemy->setHp(new_hp);
+            enemy->takeDamage(damage);
 
             if (enemy->getHp() == 0) {
-                enemy->onDeath();
                 robot.onKill();
             }
         }
     }
+
+    robot.addStatus(std::make_shared<Overload>());
+
     robot.setEnergy(robot.getEnergy() - usedEnergy);
 }

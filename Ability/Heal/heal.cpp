@@ -1,7 +1,7 @@
 #include "heal.hpp"
 #include <iostream>
-
 #include "../Player/player.hpp"
+#include "../Status/Shield/shield.hpp"
 
 Heal::Heal(int hp, int e): newHp(hp), usedEnergy(e) {}
 
@@ -21,12 +21,18 @@ void Heal::upgrade() {
     newHp += 5;
 }
 
-void Heal::use(Player &robot, Map &map, Enemy*) {
+void Heal::use(Robot &robot, Map &map, Enemy*) {
     if (robot.getEnergy() < usedEnergy) {
         std::cout << "Не хватает энергии" << std::endl;
         return;
     }
     int new_hp = robot.getHp() + newHp;
+
+    if (new_hp >= robot.getHpMax()) {
+        int over = new_hp - robot.getHpMax();
+        robot.addStatus(std::make_shared<Shield>(over));
+    }
+
     robot.setHp(new_hp);
 
     robot.setEnergy(robot.getEnergy() - usedEnergy);

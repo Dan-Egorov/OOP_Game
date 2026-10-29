@@ -14,12 +14,12 @@ public:
     std::string getName() override;
     int getUsedEnergy() override;
 
-    std::vector<std::pair<int,int>> collectValidCells(Player& user, Map& map);
+    std::vector<std::pair<int,int>> collectValidCells(Robot& user, Map& map);
 
-    void applyTeleport(Player& user, std::pair<int,int> cell);
+    void applyTeleport(Robot& user, std::pair<int,int> cell);
 
     void upgrade() override;
 
-    void use(Player&, Map&, Enemy*) override {}
+    void use(Robot&, Map&, Enemy*) override {}
     AbilityType getType() const override;
 };

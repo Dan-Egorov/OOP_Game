@@ -1,6 +1,7 @@
 #include "../Visual/drawer.hpp"
 #include "../Selector/selector.hpp"
 #include "../Player/player.hpp"
+#include "../Status/Burning/burning.hpp"
 #include "far.hpp"
 
 #include <map>
@@ -23,22 +24,21 @@ void Far::upgrade() {
     damage += 5;
 }
 
-void Far::use(Player& robot, Map& map, Enemy* target) {
+void Far::use(Robot& robot, Map& map, Enemy* target) {
     if (robot.getEnergy() < usedEnergy) {
         std::cout << "Не хватает энергии" << std::endl;
         return;
     }
 
     if (target) {
-        int new_hp = target->getHp() - damage;
-        if (new_hp < 0) new_hp = 0;
-        target->setHp(new_hp);
+        target->takeDamage(damage);
 
         if (target->getHp() == 0) {
-            target->onDeath();
             robot.onKill();
         }
     }
+
+    robot.addStatus(std::make_shared<Burning>(3, 2));
 
     robot.setEnergy(robot.getEnergy() - usedEnergy);
 }

@@ -1,4 +1,6 @@
 #include "robot.hpp"
+#include "../Status/Shield/shield.hpp"
+#include "../Ability/interface.hpp"
 
 Robot::Robot(int hp, int hpMax, int power, int energy, int maxEnergy,
              int speed, int vision, BotType type) : hp(hp), hpMax(hpMax),
@@ -32,6 +34,14 @@ std::pair<int, int> Robot::getPosition() const {
     return position;
 }
 
+const std::vector<std::shared_ptr<Ability>>& Robot::getAbilities() const {
+    return abilities;
+}
+std::vector<std::shared_ptr<Ability>>& Robot::getAbilities() {
+    return abilities;
+}
+
+
 void Robot::setHp(int newHp) {
     if (newHp >= hpMax) newHp = hpMax;
     hp = newHp;
@@ -40,6 +50,7 @@ void Robot::setPower(int newPower) {
     power = newPower;
 }
 void Robot::setEnergy(int newEnergy) {
+    if (newEnergy >= maxEnergy) newEnergy = maxEnergy;
     energy = newEnergy;
 }
 void Robot::setMaxEnergy(int newMaxEnergy) {
@@ -57,12 +68,24 @@ void Robot::setPosition(std::pair<int, int> newPosition) {
     position = newPosition;
 }
 
+int Robot::getAbilityCount() const {
+    return abilities.size();
+}
+
+void Robot::addAbility(std::shared_ptr<Ability> a) {
+    abilities.push_back(std::move(a));
+}
+
+bool Robot::hasAbility(AbilityType type) const {
+    for (const auto& a : abilities)
+        if (a->getType() == type) return true;
+    return false;
+}
+
 void Robot::botAttack(Robot& other) {
-    int new_hp = other.getHp() - power;
-    if (new_hp < 0) new_hp = 0;
-    other.setHp(new_hp);
+    other.takeDamage(power);
+
     if (other.getHp() <= 0) {
-        other.onDeath();
         onKill();
     }
 }
@@ -126,4 +149,20 @@ void Robot::tickStatuses() {
             it++;
         }
     }
+}
+
+void Robot::takeDamage(int amount) {
+    if (auto sh = getStatus(Shield_st)) {
+        auto* shield = static_cast<Shield*>(sh.get());
+        amount = shield->absorb(amount);
+        if (shield->isExpired()) removeStatus(Shield_st);
+    }
+
+    if (amount <= 0) return;
+
+    int newHp = getHp() - amount;
+    if (newHp < 0) newHp = 0;
+    setHp(newHp);
+
+    if (getHp() <= 0) onDeath();
 }

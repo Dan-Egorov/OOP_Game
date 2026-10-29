@@ -31,4 +31,16 @@ add_executable(OOP_game
         src/Ability/Attack_Around/around.cpp
         src/Ability/Heal/heal.cpp
         src/Ability/FarAttack/far.cpp
+
+        src/Status/status.cpp
+        src/Status/Slow/slow.cpp
+        src/Status/Overload/overload.cpp
+        src/Status/Burning/burning.cpp
+        src/Status/Shield/shield.cpp
+
+        src/Item/HealthPotion/health_potion.cpp
+        src/Item/EnergyPotion/energy_potion.cpp
+        src/Item/AttackBoost/attack_boost.cpp
+        src/Status/AttackBuff/attack_buff.cpp
+        src/Status/ItemPickup/item_pickup.cpp
 )
